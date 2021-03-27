@@ -1,0 +1,23 @@
+<ruleset name="Custom Standard">
+    <!-- 
+    Diretórios e Arquivos que devem ser checados.
+    Descomente aqueles que forem pertinentes ao seu projeto.
+    -->
+    <file>./app</file>
+    <file>./database</file>
+    <file>./tests</file>
+
+    <!-- Argumentos de linha de comando a serem utilizados -->
+    <arg name="extensions" value="php" />
+    <arg name="report" value="full" />
+    <arg name="colors" />
+    <arg name="severity" value="1" />
+
+    <!-- Padrão sado para a checagem -->
+    <rule ref="PSR12" />
+
+    <!-- Exclui migrations e seeds da verificação do sniff, para manter conformidade com Laravel -->
+    <rule ref="PSR1.Classes.ClassDeclaration.MissingNamespace">
+        <exclude-pattern>*/migrations/*</exclude-pattern>
+    </rule>
+</ruleset>
