@@ -17,7 +17,7 @@
             "defesa": "1",
             "agilidade": "3",
             "fator_dano": "2",
-            "dado_dano": "d4"
+            "dado_dano": "d6"
         }, {
             "tipo": "heroi",
             "classe": "Paladino",
@@ -43,8 +43,8 @@
             "forca": "6",
             "defesa": "2",
             "agilidade": "1",
-            "fator_dano": "2",
-            "dado_dano": "d4"
+            "fator_dano": "1",
+            "dado_dano": "d8"
         }, {
             "tipo": "monstro",
             "classe": "Kobold",
@@ -54,6 +54,6 @@
             "agilidade": "4",
             "fator_dano": "3",
             "dado_dano": "d2"
-        },
+        }
     ]
 }
