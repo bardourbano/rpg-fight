@@ -2,10 +2,10 @@
 
 namespace App\Http\Controllers;
 
-use App\Models\Batalha;
+use App\Models\Fight;
 use Illuminate\Http\Request;
 
-class BatalhaController extends Controller
+class FightController extends Controller
 {
     /**
      * Display a listing of the resource.
@@ -31,10 +31,10 @@ class BatalhaController extends Controller
     /**
      * Display the specified resource.
      *
-     * @param  \App\Models\Batalha  $batalha
+     * @param  \App\Models\Fight  $fight
      * @return \Illuminate\Http\Response
      */
-    public function show(Batalha $batalha)
+    public function show(Fight $fight)
     {
         //
     }
@@ -43,10 +43,10 @@ class BatalhaController extends Controller
      * Update the specified resource in storage.
      *
      * @param  \Illuminate\Http\Request  $request
-     * @param  \App\Models\Batalha  $batalha
+     * @param  \App\Models\Fight  $fight
      * @return \Illuminate\Http\Response
      */
-    public function update(Request $request, Batalha $batalha)
+    public function update(Request $request, Fight $fight)
     {
         //
     }
@@ -54,10 +54,10 @@ class BatalhaController extends Controller
     /**
      * Remove the specified resource from storage.
      *
-     * @param  \App\Models\Batalha  $batalha
+     * @param  \App\Models\Fight  $fight
      * @return \Illuminate\Http\Response
      */
-    public function destroy(Batalha $batalha)
+    public function destroy(Fight $fight)
     {
         //
     }

@@ -8,14 +8,14 @@ use Illuminate\Support\Facades\Artisan;
 use Illuminate\Support\Facades\DB;
 use Illuminate\Support\Str;
 
-class IniciarJogo extends Command
+class GameStart extends Command
 {
     /**
      * The name and signature of the console command.
      *
      * @var string
      */
-    protected $signature = 'jogo:iniciar';
+    protected $signature = 'game:start';
 
     /**
      * The console command description.
@@ -42,15 +42,15 @@ class IniciarJogo extends Command
     public function handle()
     {
         try {
-            $base_de_dados_preechida = DB::table('personagens')->exists()
-                && DB::table('usuarios')->exists()
-                && DB::table('batalhas')->exists();
+            $is_database_filled = DB::table('characters')->exists()
+                && DB::table('users')->exists()
+                && DB::table('fights')->exists();
         } catch (QueryException $e) {
             Str::contains($e->getMessage(), 'Base table or view not found: 1146') ? Artisan::call('migrate') : throw $e;
-            $base_de_dados_preechida = false;
+            $is_database_filled = false;
         }
 
-        if (!$base_de_dados_preechida) {
+        if (!$is_database_filled) {
             Artisan::call('db:seed');
         } else {
             if ($this->confirm('Já existe uma base de dados, deseja sobrescrevê-la? [y - sim | n - não]:')) {

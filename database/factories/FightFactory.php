@@ -2,17 +2,17 @@
 
 namespace Database\Factories;
 
-use App\Models\Personagem;
+use App\Models\Fight;
 use Illuminate\Database\Eloquent\Factories\Factory;
 
-class PersonagemFactory extends Factory
+class FightFactory extends Factory
 {
     /**
      * The name of the factory's corresponding model.
      *
      * @var string
      */
-    protected $model = Personagem::class;
+    protected $model = Fight::class;
 
     /**
      * Define the model's default state.

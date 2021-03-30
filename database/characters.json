@@ -1,0 +1,59 @@
+{
+    "characters": [
+        {
+            "agility": "3",
+            "class": "Fighter",
+            "damage_dice": "d4",
+            "damage_factor": "2",
+            "defense": "3",
+            "life_points": "12",
+            "strength": "4",
+            "type": "hero"
+        }, {
+            "agility": "3",
+            "class": "Barbarian",
+            "damage_dice": "d6",
+            "damage_factor": "2",
+            "defense": "1",
+            "life_points": "13",
+            "strength": "6",
+            "type": "hero"
+        }, {
+            "agility": "1",
+            "class": "Paladin",
+            "damage_dice": "d4",
+            "damage_factor": "2",
+            "defense": "5",
+            "life_points": "15",
+            "strength": "2",
+            "type": "hero"
+        }, {
+            "agility": "1",
+            "class": "Undead",
+            "damage_dice": "d4",
+            "damage_factor": "2",
+            "defense": "0",
+            "life_points": "25",
+            "strength": "4",
+            "type": "monster"
+        }, {
+            "agility": "1",
+            "class": "Orc",
+            "damage_dice": "d8",
+            "damage_factor": "1",
+            "defense": "2",
+            "life_points": "20",
+            "strength": "6",
+            "type": "monster"
+        }, {
+            "agility": "4",
+            "class": "Kobold",
+            "damage_dice": "d2",
+            "damage_factor": "3",
+            "defense": "2",
+            "life_points": "20",
+            "strength": "4",
+            "type": "monster"
+        }
+    ]
+}
