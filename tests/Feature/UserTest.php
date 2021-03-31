@@ -110,6 +110,8 @@ class UserTest extends TestCase
         ]);
         $json = $response->decodeResponseJson();
 
+        $response->assertSuccessful();
+        
         $this->assertEquals($json[0]['score'], 1000);
         $this->assertEquals($json[11]['score'], 0);
     }

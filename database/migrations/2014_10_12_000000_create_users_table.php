@@ -18,7 +18,6 @@ class CreateUsersTable extends Migration
             $table->string('nickname')->unique();
             $table->string('password');
             $table->unsignedInteger('score')->default(0);
-            $table->rememberToken();
             $table->timestamps();
         });
     }

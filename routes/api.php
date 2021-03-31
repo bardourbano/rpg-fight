@@ -1,5 +1,6 @@
 <?php
 
+use App\Http\Controllers\CharacterController;
 use App\Http\Controllers\UserController;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Route;
@@ -19,4 +20,5 @@ Route::post('/users', [UserController::class, 'store']);
 
 Route::middleware('basic.auth:api')->group(function () {
     Route::get('/ranking', [UserController::class, 'index']);
+    Route::get('/heroes', [CharacterController::class, 'index']);
 });

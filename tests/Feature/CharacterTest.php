@@ -3,10 +3,12 @@
 namespace Tests\Feature;
 
 use App\Models\Character;
+use App\Models\User;
 use Database\Seeders\CharacterSeed;
 use Illuminate\Foundation\Testing\DatabaseMigrations;
 use Illuminate\Foundation\Testing\RefreshDatabase;
 use Illuminate\Foundation\Testing\WithFaker;
+use Illuminate\Support\Facades\Hash;
 use Tests\TestCase;
 
 class CharacterTest extends TestCase
@@ -32,5 +34,30 @@ class CharacterTest extends TestCase
         $json = json_decode(file_get_contents('database/characters.json'), true);
 
         $this->assertEquals($json['characters'], $characters->toArray());
+    }
+
+    /** @test */
+    public function heroesList()
+    {
+        $this->seed(CharacterSeed::class);
+        
+        $nickname = 'TestMaster';
+        $password = 'testword';
+
+        User::factory([
+            'nickname' => $nickname,
+            'password' => Hash::make($password)
+        ])->create();
+
+        $response = $this->get('/api/heroes', [
+            'nickname' => $nickname,
+            'password' => $password
+        ]);
+
+        $response->assertSuccessful();
+
+        $heroes = Character::where('type', 'hero')->get()->toArray();
+
+        $response->assertJson($heroes);
     }
 }
