@@ -2,6 +2,7 @@
 
 namespace Database\Factories;
 
+use App\Models\Character;
 use App\Models\Fight;
 use Illuminate\Database\Eloquent\Factories\Factory;
 
@@ -22,7 +23,8 @@ class FightFactory extends Factory
     public function definition()
     {
         return [
-            //
+            'hero_id' => $this->faker->randomElement(Character::hero()->get('id', 'type'))->id,
+            'monster_id' => $this->faker->randomElement(Character::monster()->get('id', 'type'))->id,
         ];
     }
 }

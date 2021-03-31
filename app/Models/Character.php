@@ -14,4 +14,9 @@ class Character extends Model
     {
         return $query->where('type', 'hero');
     }
+    
+    public function scopeMonster(Builder $query): Builder
+    {
+        return $query->where('type', 'monster');
+    }
 }
