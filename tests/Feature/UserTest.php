@@ -94,33 +94,23 @@ class UserTest extends TestCase
     /** @test */
     public function usersRanking()
     {
-        User::factory()->count(10)->create();
+        User::factory()->count(9)->create();
         User::factory()->count(2)->state(new Sequence(
             ['score' => 0],
             ['score' => 1000]
         ))->create();
 
-        $response = $this->get('/api/ranking');
+        $user = User::factory([
+            'nickname' => 'TestMaster',
+            'password' => Hash::make('testword')
+        ])->create();
+        $response = $this->get('/api/ranking', [
+            'nickname' => $user->nickname, 
+            'password' => 'testword'
+        ]);
         $json = $response->decodeResponseJson();
 
         $this->assertEquals($json[0]['score'], 1000);
         $this->assertEquals($json[11]['score'], 0);
-    }
-
-    /** @test */
-    public function userAuthentication()
-    {
-        $nickname = "DarkFlameMaster";
-        $password = "password";
-
-        User::factory([
-            'nickname' => $nickname,
-            'password' => $password
-        ])->create();
-
-        $response = $this->post('/api/logon', [
-            'nickname' => $nickname,
-            'password' => $password
-        ]);
     }
 }

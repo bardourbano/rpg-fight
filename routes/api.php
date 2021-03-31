@@ -15,7 +15,8 @@ use Illuminate\Support\Facades\Route;
 |
 */
 
-Route::middleware('api')->group(function () {
+Route::post('/users', [UserController::class, 'store']);
+
+Route::middleware('basic.auth:api')->group(function () {
     Route::get('/ranking', [UserController::class, 'index']);
-    Route::post('/users', [UserController::class, 'store']);
 });
