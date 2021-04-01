@@ -1,6 +1,7 @@
 <?php
 
 use App\Http\Controllers\CharacterController;
+use App\Http\Controllers\FightController;
 use App\Http\Controllers\UserController;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Route;
@@ -19,6 +20,10 @@ use Illuminate\Support\Facades\Route;
 Route::post('/users', [UserController::class, 'store']);
 
 Route::middleware('basic.auth:api')->group(function () {
-    Route::get('/ranking', [UserController::class, 'index']);
+    Route::post('/fights', [FightController::class, 'store']);
+    Route::patch('/fights/{fight}', [FightController::class, 'update']);
+
     Route::get('/heroes', [CharacterController::class, 'index']);
+
+    Route::get('/ranking', [UserController::class, 'index']);
 });

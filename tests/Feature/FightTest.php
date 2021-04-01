@@ -23,20 +23,17 @@ class FightTest extends TestCase
 
     public function __construct()
     {
-        $this->seed(CharacterSeed::class);
+        parent::__construct();
 
         $this->nickname = 'TesteMaster';
         $this->password = 'testword';
-
-        $this->userc = User::factory([
-            'nickname' => $nickname,
-            'password' => Hash::make($password)
-        ])->create();
     }
 
     /** @test */
     public function storeFight()
     {
+        $this->databaseSetUp();
+
         $fight = Fight::factory(['user_id' => $this->user->id])->create();
 
         $this->assertDatabaseHas('fights', ['id' => $fight->id]);
@@ -45,23 +42,45 @@ class FightTest extends TestCase
     /** @test */
     public function startFight()
     {
-        $hero = Character::hero()->get()->first();
-        
-        $response = $this->post("/fights", [
+        $this->databaseSetUp();
 
-        ])
+        $headers = [
+            'nickname' => $this->nickname,
+            'password' => $this->password
+        ];
+
+        $hero = Character::hero()->get()->first();
+        $response = $this->post("/api/fights", ['hero_id' => $hero->id], $headers);
+
+        $response->assertCreated();
+        $response->assertJsonFragment($hero->toArray());
+        $this->assertArrayHasKey('fight', $response->decodeResponseJson());
     }
 
-    /** @tes */
-    public function updateFight()
+    /** @test */
+    public function doATurn()
     {
+        $this->databaseSetUp();
+
         $fight = Fight::factory(['user_id' => $this->user->id])->create();
+        
+        $headers = [
+            'nickname' => $this->nickname,
+            'password' => $this->password
+        ];
 
-        $response = $this->patch("fights/$fight->id", [
-            'win' => true,
-            'turn' => 0,
-            ''
+        $response = $this->patch("/api/fights/$fight->id", headers: $headers);
 
-        ])
+        $response->assertSuccessful();
+    }
+
+    private function databaseSetUp()
+    {
+        $this->seed(CharacterSeed::class);
+
+        $this->user = User::factory([
+            'nickname' => $this->nickname,
+            'password' => Hash::make($this->password)
+        ])->create();
     }
 }
