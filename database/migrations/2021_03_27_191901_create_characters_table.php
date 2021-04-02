@@ -18,11 +18,11 @@ class CreateCharactersTable extends Migration
             $table->timestamps();
             $table->enum('type', ['hero', 'monster']);
             $table->string('class');
-            $table->unsignedTinyInteger('life_points');
-            $table->unsignedTinyInteger('strength');
-            $table->unsignedTinyInteger('defense');
-            $table->unsignedTinyInteger('agility');
-            $table->unsignedTinyInteger('damage_factor');
+            $table->integer('life_points');
+            $table->integer('strength');
+            $table->integer('defense');
+            $table->integer('agility');
+            $table->integer('damage_factor');
             $table->enum('damage_dice', ['d2', 'd4', 'd6', 'd8']);
         });
     }

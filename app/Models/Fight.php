@@ -10,7 +10,10 @@ class Fight extends Model
 {
     use HasFactory;
 
-    
+    protected $casts = [
+        'log' => 'array'
+    ];
+    protected $fillable = ['log', 'win'];
 
     public function hero(): BelongsTo
     {
