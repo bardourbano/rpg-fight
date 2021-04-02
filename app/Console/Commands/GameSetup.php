@@ -55,22 +55,23 @@ class GameSetup extends Command
                 || DB::table('users')->exists()
                 || DB::table('fights')->exists();
         } catch (QueryException $e) {
-            Str::contains(
-                $e->getMessage(),
-                'Base table or view not found: 1146'
-            ) ? Artisan::call('migrate') : throw $e;
+            if (Str::contains($e->getMessage(), 'Base table or view not found: 1146')) {
+                $this->task('Creating tables', fn() => Artisan::call('migrate'));
+            } else {
+                throw $e;
+            }
 
             $is_database_filled = false;
         }
 
         if (!$is_database_filled) {
-            Artisan::call('db:seed');
+            $this->task('Populating database', fn() =>Artisan::call('db:seed'));
         } else {
             if ($this->confirm(
-                'Database for the game alredy exists. Do you wish to overwrite it? [y - yes | n - no]:'
+                'Database for the game alredy exists. Do you wish to overwrite it?:'
             )) {
-                Artisan::call('migrate:fresh');
-                Artisan::call('db:seed');
+                $this->task('Re-creating tables', fn() => Artisan::call('migrate:fresh'));
+                $this->task('Populating database', fn() => Artisan::call('db:seed'));
             }
         }
         

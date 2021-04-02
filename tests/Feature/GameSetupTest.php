@@ -43,7 +43,7 @@ class GameSetupTest extends TestCase
         $this->artisan('game:setup --no-server')
             ->expectsOutput("Preparing database...")
             ->expectsConfirmation(
-                'Database for the game alredy exists. Do you wish to overwrite it? [y - yes | n - no]:', 'yes'
+                'Database for the game alredy exists. Do you wish to overwrite it?:', 'yes'
             )
             ->assertExitCode(0);
 
