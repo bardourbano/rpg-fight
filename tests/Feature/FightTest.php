@@ -40,6 +40,26 @@ class FightTest extends TestCase
     }
 
     /** @test */
+    public function userFightsHistory()
+    {
+        $this->databaseSetUp();
+
+        $count = 5;
+
+        Fight::factory(['user_id' => $this->user->id, 'win' => true])->count($count)->create();
+        
+        $headers = [
+            'nickname' => $this->nickname,
+            'password' => $this->password
+        ];
+
+        $response = $this->get("/api/users/{$this->user->id}/fights", $headers);
+
+        $response->assertOk();
+        $response->assertJsonCount($count);
+    }
+
+    /** @test */
     public function startFight()
     {
         $this->databaseSetUp();

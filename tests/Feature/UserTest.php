@@ -115,4 +115,21 @@ class UserTest extends TestCase
         $this->assertEquals($json[0]['score'], 1000);
         $this->assertEquals($json[11]['score'], 0);
     }
+
+    /** @test */
+    public function userInfo()
+    {
+        $nickname = "niconome";
+        $password = "passapalavra";
+
+        $user = User::factory([
+            'nickname' => $nickname,
+            'password' => Hash::make($password)
+        ])->create();
+
+        $response = $this->get("/api/users/$user->id" , ['nickname' => $nickname, 'password' => $password]);
+        
+        $response->assertOk();
+        $response->assertExactJson($user->toArray());
+    }
 }

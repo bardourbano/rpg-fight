@@ -33,6 +33,8 @@ class User extends Authenticatable
         'remember_token',
     ];
 
+    protected $casts = ['score' => 'integer'];
+
     public function fights(): HasMany
     {
         return $this->hasMany(Fight::class);
