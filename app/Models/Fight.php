@@ -6,6 +6,11 @@ use Illuminate\Database\Eloquent\Factories\HasFactory;
 use Illuminate\Database\Eloquent\Model;
 use Illuminate\Database\Eloquent\Relations\BelongsTo;
 
+/**
+ * @property Character $hero
+ * @property Character $monster
+ * @property User $user
+ */
 class Fight extends Model
 {
     use HasFactory;

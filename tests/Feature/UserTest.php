@@ -105,7 +105,7 @@ class UserTest extends TestCase
             'password' => Hash::make('testword')
         ])->create();
         $response = $this->get('/api/ranking', [
-            'nickname' => $user->nickname, 
+            'nickname' => $user->nickname,
             'password' => 'testword'
         ]);
         $json = $response->decodeResponseJson();
@@ -127,7 +127,7 @@ class UserTest extends TestCase
             'password' => Hash::make($password)
         ])->create();
 
-        $response = $this->get("/api/users/$user->id" , ['nickname' => $nickname, 'password' => $password]);
+        $response = $this->get("/api/users/$user->id", ['nickname' => $nickname, 'password' => $password]);
         
         $response->assertOk();
         $response->assertExactJson($user->toArray());

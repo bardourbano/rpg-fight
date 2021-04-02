@@ -23,10 +23,8 @@ class FightController extends Controller
 
     /**
      * Display a listing of the resource.
-     *
-     * @return \Illuminate\Http\Response
      */
-    public function index(User $user)
+    public function index(User $user): Response
     {
         $fights = $user->fights;
         return response($fights->toJson());
@@ -38,10 +36,10 @@ class FightController extends Controller
     public function store(Request $request): Response
     {
         $user = User::where('nickname', $request->header('nickname'))->first();
-        $fights = Fight::where('user_id', $user->id)->where('win', null)->get('id');
+        $fights = Fight::where('user_id', $user?->id)->where('win', null)->get('id');
 
         if (filled($fights)) {
-            return abort(409, 'Theres is alredy one battle in couse');
+            return response('Theres is alredy one battle in couse', 409);
         }
         
         $hero = Character::find($request->hero_id);
@@ -50,30 +48,19 @@ class FightController extends Controller
         $monster = Character::where('id', Arr::random($monster))->first();
 
     
-        $fight = new Fight;
+        $fight = new Fight();
         $fight->hero()->associate($hero);
         $fight->monster()->associate($monster);
         $fight->user()->associate($user);
         $fight->save();
 
         $content = [
-            'hero' => $hero->toArray(),
-            'monster' => $monster->toArray(),
+            'hero' => $hero?->toArray(),
+            'monster' => $monster?->toArray(),
             'fight' => ['id' => $fight->id]
         ];
 
-        return response(json_encode($content), 201);
-    }
-
-    /**
-     * Display the specified resource.
-     *
-     * @param  \App\Models\Fight  $fight
-     * @return \Illuminate\Http\Response
-     */
-    public function show(Fight $fight)
-    {
-        //
+        return response(json_encode($content), 201); // @phpstan-ignore-line
     }
 
     /**
@@ -85,8 +72,12 @@ class FightController extends Controller
         $monster = $fight->monster;
         $user = $fight->user;
 
+        $attacks = [];
         $log = $fight->log;
+
         $attack_phases = 0;
+ 
+        $is_someone_dead = false;
 
         if (filled($log)) {
             $hero_lp = end($log)['hero_current_life_points'];
@@ -127,7 +118,7 @@ class FightController extends Controller
                 case ($hero_initiative > $monster_initiative && $attack_phases == 0):
                 case ($hero_initiative < $monster_initiative && $attack_phases == 1):
                     list(
-                        $attacks["attack_" . $attack_phases + 1],
+                        $attacks["attack_" . ((int) $attack_phases + 1)],
                         $is_someone_dead,
                         $monster_lp
                     ) = $this->attackPhase(
@@ -143,7 +134,7 @@ class FightController extends Controller
                 case ($hero_initiative < $monster_initiative && $attack_phases == 0):
                 case ($hero_initiative > $monster_initiative && $attack_phases == 1):
                     list(
-                        $attacks["attack_" . $attack_phases + 1],
+                        $attacks["attack_" . ((int) $attack_phases + 1)],
                         $is_someone_dead,
                         $hero_lp
                     ) = $this->attackPhase(
@@ -178,12 +169,10 @@ class FightController extends Controller
             ]
         ];
         
-        $is_someone_dead = true;
         if ($is_someone_dead) {
-            $monster_lp = -1;
             if ($monster_lp <= 0) {
                 $fight->win = true;
-                $fight->score = 100 - Str::after($turn_number, '_');
+                $fight->score = 100 - (int) Str::after($turn_number, '_');
                 
                 $user->score += $fight->score;
                 $user->save();
@@ -198,18 +187,7 @@ class FightController extends Controller
         $fight->log = $log;
         $fight->save();
            
-        return response(json_encode($content));
-    }
-
-    /**
-     * Remove the specified resource from storage.
-     *
-     * @param  \App\Models\Fight  $fight
-     * @return \Illuminate\Http\Response
-     */
-    public function destroy(Fight $fight)
-    {
-        //
+        return response(json_encode($content)); // @phpstan-ignore-line
     }
 
     private function attackRoll(Character $attacker, Character $defender): array
@@ -234,7 +212,7 @@ class FightController extends Controller
     {
         $damage = $attacker->strength;
 
-        for ($i = 0; $i < $attacker->damage_factor ; $i++) { 
+        for ($i = 0; $i < $attacker->damage_factor; $i++) {
             $damage += random_int(1, $this->dices[$attacker->damage_dice]);
         }
 
@@ -260,7 +238,6 @@ class FightController extends Controller
             $attack['defender_life_points'] = $defender_lp;
 
             $is_someone_dead = ($defender_lp <= 0);
-        
         }
 
         return [$attack, $is_someone_dead, $defender_lp];
