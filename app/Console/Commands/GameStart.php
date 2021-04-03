@@ -87,44 +87,77 @@ class GameStart extends Command
             } while (!$success);
         }
 
-        /*
-         * Menu
-         */
-        $choice = $this->choice(
-            question: "What would you like to do?",
-            choices: [
-                "Start a new battle",
-                "See my infos",
-                "See my battle history",
-                "See ranking",
-                "Exit"
-            ]
-        );
+        while (true) {
+            /*
+             * Menu
+             */
+            $choice = $this->choice(
+                question: "What would you like to do?",
+                choices: [
+                    "Start a new battle",
+                    "See my infos",
+                    "See my battle history",
+                    "See ranking",
+                    "Exit"
+                ]
+            );
 
-        switch ($choice) {
-            case 'See ranking':
-                $error = false;
-
-                $this->task('Retrieving user info', function () use (&$error) {
-                    $response = Http::get(route('users.ranking'));
-                    
-                    if ($response->status() === 200) {
+            switch ($choice) {
+                case 'See my infos':
+                    $error = false;
     
-                    } elseif ($response->status() === 400) {
-                        $this->error("Nickname and/or password missing. Try again.");
-                        $error = true;
-                        return false;
-                    }
-                });
+                    $this->task("Retrieving user info", function () use ($nickname, $password) {
+                        $response = Http::withHeaders([
+                            compact('nickname', 'password')
+                        ])->get(route('users.show', $nickname));
+    
+                        if ($response->status() === 200) {
+                            $body = $response->json();
+                            
+                            $this->info("Here is the information about you:");
+                            $this->comment("Nickname: " . $body['nickname']);
+                            $this->comment("Score: " . $body['score']);
+                            return true;
+                        }
+                    });
+    
+                    break;
+                case 'See ranking':
+                    $error = false;
+    
+                    $this->task('Retrieving ranking', function () use (&$error) {
+                        $response = Http::get(route('users.ranking'));
+                        
+                        if ($response->ok()) {
+                            $this->table(
+                                ['Nickname', 'Score'],
+                                $response->json()
+                            );
 
-                if ($error) return 1;
+                            return true;
+                        } else {
+                            match($response->status()) {
+                                400 => $this->error("Nickname and/or password missing. Try again."),
+                                401 => $this->error("Nickname and/or Password incorrect.")
+                            };
 
-                break;
-            
-            default:
-                # code...
-                break;
+                            $error = true;
+                            return false;
+                        }
+                    });
+    
+                    if ($error) return 1;
+    
+                    break;
+                case 'Exit':
+                    return 0;
+                    break;
+                default:
+                    # code...
+                    break;
+            }
         }
+        
 
 
         return 0;

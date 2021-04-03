@@ -6,6 +6,7 @@ use App\Models\User;
 use Illuminate\Foundation\Testing\DatabaseMigrations;
 use Illuminate\Foundation\Testing\RefreshDatabase;
 use Illuminate\Foundation\Testing\WithFaker;
+use Illuminate\Support\Facades\Cache;
 use Illuminate\Support\Facades\Hash;
 use Illuminate\Support\Facades\Http;
 use Tests\TestCase;
@@ -79,7 +80,7 @@ class GameStartTest extends TestCase
             ->expectsQuestion("And what's your password?", $this->password)
             ->expectsChoice(
                 question: "What would you like to do?",
-                answer: "See my infos",
+                answer: "Exit",
                 answers: [
                     "Start a new battle",
                     "See my infos",
@@ -92,7 +93,7 @@ class GameStartTest extends TestCase
     }
 
     /** @test */
-    public function shouldHandleRefusedCredentials()
+    public function shouldHandleMissingCredentials()
     {
         Http::fake([
             '*/api/*' => Http::response('Nickname and Password required in header to access this route.', 400) 
@@ -108,12 +109,70 @@ class GameStartTest extends TestCase
             ->assertExitCode(1);
     }
 
+    /** @test */
+    public function shouldHandleRefusedCredentials()
+    {
+        Http::fake([
+            '*/api/*' => Http::response('Nickname and/or Password incorrect.', 401) 
+        ]);
+
+        $this->artisan($this->command)
+            ->expectsOutput("Hello Player!")
+            ->expectsConfirmation('Do you have a nickname?', 'yes')
+            ->expectsQuestion("What's your nickname?", $this->nickname)
+            ->expectsQuestion("And what's your password?", $this->password)
+            ->expectsQuestion("What would you like to do?", "See ranking")
+            ->expectsOutput("Nickname and/or Password incorrect.")
+            ->assertExitCode(1);
+    }
+
+    /** @test */
     public function userInfos()
     {
         $user = User::factory(['nickname' => $this->nickname, 'password' => Hash::make($this->password)])->create();
 
         Http::fake([
-            "*/users/$user->id" => Http::response($user->toJson())
+            "*/users/{$user->nickname}" => Http::response($user->toJson(), 200)
         ]);
+
+        $this->artisan($this->command)
+            ->expectsOutput("Hello Player!")
+            ->expectsConfirmation('Do you have a nickname?', 'yes')
+            ->expectsQuestion("What's your nickname?", $this->nickname)
+            ->expectsQuestion("And what's your password?", $this->password)
+            ->expectsQuestion("What would you like to do?", "See my infos")
+            ->expectsOutput("Here is the information about you:")
+            ->expectsOutput("Nickname: $user->nickname")
+            ->expectsOutput("Score: $user->score")
+            ->expectsQuestion("What would you like to do?", "Exit")
+            ->assertExitCode(0);
     }
+
+    /** @test */
+    public function ranking()
+    {
+        User::factory(['nickname' => $this->nickname, 'password' => Hash::make($this->password)])->create();
+        User::factory()->count(3)->create();
+
+        $ranking = User::orderByDesc('score')->get(['nickname', 'score']);
+
+        Http::fake([
+            "*/ranking" => Http::response($ranking->toJson())
+        ]);
+
+        $this->artisan($this->command)
+            ->expectsOutput("Hello Player!")
+            ->expectsConfirmation('Do you have a nickname?', 'yes')
+            ->expectsQuestion("What's your nickname?", $this->nickname)
+            ->expectsQuestion("And what's your password?", $this->password)
+            ->expectsQuestion("What would you like to do?", "See ranking")
+            ->expectsTable(
+                ['Nickname', 'Score'],
+                $ranking->toArray()
+            )
+            ->expectsQuestion("What would you like to do?", "Exit")
+            ->assertExitCode(0);
+    }
+
+    / 
 }
