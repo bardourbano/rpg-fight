@@ -35,6 +35,14 @@ class User extends Authenticatable
 
     protected $casts = ['score' => 'integer'];
 
+    /**
+     * Get the route key for the model.
+     */
+    public function getRouteKeyName(): string
+    {
+        return 'nickname';
+    }
+
     public function fights(): HasMany
     {
         return $this->hasMany(Fight::class);

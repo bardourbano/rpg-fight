@@ -53,7 +53,7 @@ class FightTest extends TestCase
             'password' => $this->password
         ];
 
-        $response = $this->get("/api/users/{$this->user->id}/fights", $headers);
+        $response = $this->get("/api/users/{$this->nickname}/fights", $headers);
 
         $response->assertOk();
         $response->assertJsonCount($count);
