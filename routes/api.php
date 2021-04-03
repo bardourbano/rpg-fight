@@ -17,15 +17,15 @@ use Illuminate\Support\Facades\Route;
 |
 */
 
-Route::post('/users', [UserController::class, 'store']);
+Route::post('/users', [UserController::class, 'store'])->name('users.store');
 
 Route::middleware('basic.auth:api')->group(function () {
-    Route::get('/users/{user}/fights', [FightController::class, 'index']);
-    Route::post('/fights', [FightController::class, 'store']);
-    Route::patch('/fights/{fight}', [FightController::class, 'update']);
+    Route::get('/users/{user}/fights', [FightController::class, 'index'])->name('users.fights.index');
+    Route::post('/fights', [FightController::class, 'store'])->name('fights.store');
+    Route::patch('/fights/{fight}', [FightController::class, 'update'])->name('fights.update');
 
-    Route::get('/heroes', [CharacterController::class, 'index']);
+    Route::get('/heroes', [CharacterController::class, 'index'])->name('heroes.index');
 
-    Route::get('/ranking', [UserController::class, 'index']);
-    Route::get('/users/{user}', [UserController::class, 'show']);
+    Route::get('/ranking', [UserController::class, 'index'])->name('users.ranking');
+    Route::get('/users/{user}', [UserController::class, 'show'])->name('users.show');
 });
