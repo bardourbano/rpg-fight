@@ -33,7 +33,10 @@ class CharacterTest extends TestCase
         ]);
         $json = json_decode(file_get_contents('database/characters.json'), true);
 
-        $this->assertEquals($json['characters'], $characters->toArray());
+        $this->assertEquals(
+            $json['characters'],
+            $characters->makeVisible(['damage_dice', 'damage_factor'])->makeHidden('damage')->toArray()
+        );
     }
 
     /** @test */
@@ -56,7 +59,7 @@ class CharacterTest extends TestCase
 
         $response->assertSuccessful();
 
-        $heroes = Character::where('type', 'hero')->get()->toArray();
+        $heroes = Character::where('type', 'hero')->get()->makeHidden('type')->toArray();
 
         $response->assertJson($heroes);
     }
