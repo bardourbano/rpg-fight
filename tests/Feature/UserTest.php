@@ -127,7 +127,7 @@ class UserTest extends TestCase
             'password' => Hash::make($password)
         ])->create();
 
-        $response = $this->get("/api/users/$user->id", ['nickname' => $nickname, 'password' => $password]);
+        $response = $this->get("/api/users/$user->nickname", ['nickname' => $nickname, 'password' => $password]);
         
         $response->assertOk();
         $response->assertExactJson($user->toArray());
