@@ -2,7 +2,9 @@
 
 namespace Tests\Feature;
 
+use App\Models\Character;
 use App\Models\User;
+use Database\Seeders\CharacterSeed;
 use Illuminate\Foundation\Testing\DatabaseMigrations;
 use Illuminate\Foundation\Testing\RefreshDatabase;
 use Illuminate\Foundation\Testing\WithFaker;
@@ -174,5 +176,29 @@ class GameStartTest extends TestCase
             ->assertExitCode(0);
     }
 
-    / 
+    /** @test */
+    public function newBattle()
+    {
+        User::factory(['nickname' => $this->nickname, 'password' => Hash::make($this->password)])->create();
+        $this->seed(CharacterSeed::class);
+
+        $heroes = Character::hero()->get();
+
+        Http::fake([
+            '*/heroes' => Http::response($heroes->makeHidden('type')->toJson())
+        ]);
+
+        $this->artisan($this->command)
+            ->expectsOutput("Hello Player!")
+            ->expectsConfirmation('Do you have a nickname?', 'yes')
+            ->expectsQuestion("What's your nickname?", $this->nickname)
+            ->expectsQuestion("And what's your password?", $this->password)
+            ->expectsQuestion("What would you like to do?", "Start a new battle")
+            ->expectsTable(
+                ['ID', 'Class', 'Life Points', 'Strength', 'Defense', 'Agility', 'Damage'],
+                $heroes->makeHidden('type')->toArray()
+            )
+            ->expectsQuestion("Please, inform the ID of the chosen class", $heroes->first()->id);
+
+    }
 }

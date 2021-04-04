@@ -3,6 +3,7 @@
 namespace App\Console\Commands;
 
 use Illuminate\Console\Command;
+use Illuminate\Support\Arr;
 use Illuminate\Support\Facades\Http;
 use Illuminate\Support\Facades\URL;
 
@@ -103,10 +104,48 @@ class GameStart extends Command
             );
 
             switch ($choice) {
+                case 'Start a new battle':
+                    $ids = [];
+                    $this->task("Retrieving heroes...", function () use ($nickname, $password, &$ids) {
+                        $response = Http::withHeaders([
+                            compact('nickname', 'password')
+                        ])->get(route('heroes.index'));
+
+                        if ($response->status() === 200) {
+                            $this->table(
+                                ['ID', 'Class', 'Life Points', 'Strength', 'Defense', 'Agility', 'Damage'],
+                                $response->json()
+                            );
+
+                            $ids = Arr::pluck($response->json(), 'id');
+
+                            return true;
+                        }
+                    });
+
+                    $class_id = $this->ask("Please, inform the ID of the chosen class");
+
+                    if (!in_array($class_id, $ids)) {
+                        $this->error("ID {$class_id} isn't an Hero ID. Please, try again and choose a valid ID.");
+                        return 1;
+                    }
+                    
+                    $this->task("Searching for a monster...", function () use ($class_id) {
+                        $response = Http::withHeaders([
+                            compact('nickname', 'password')
+                        ])->post(route('fights.store'), ['hero_id' => $class_id]);
+
+                        if ($response->status() === 201) {
+                            $this->info("Your opponent is a {$response->json()['monster']['class']}!");
+                        }
+                    });
+
+                    return 1;
+                    break;
                 case 'See my infos':
                     $error = false;
     
-                    $this->task("Retrieving user info", function () use ($nickname, $password) {
+                    $this->task("Retrieving user info...", function () use ($nickname, $password) {
                         $response = Http::withHeaders([
                             compact('nickname', 'password')
                         ])->get(route('users.show', $nickname));

@@ -15,6 +15,6 @@ class CharacterController extends Controller
     {
         $heroes = Character::hero()->get();
 
-        return response($heroes->toJson());
+        return response($heroes->makeHidden('type')->toJson());
     }
 }
