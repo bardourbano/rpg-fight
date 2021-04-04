@@ -130,7 +130,7 @@ class GameStart extends Command
                         return 1;
                     }
                     
-                    $this->task("Searching for a monster...", function () use ($class_id) {
+                    $this->task("Searching for a monster...", function () use ($class_id, $nickname, $password) {
                         $response = Http::withHeaders([
                             compact('nickname', 'password')
                         ])->post(route('fights.store'), ['hero_id' => $class_id]);

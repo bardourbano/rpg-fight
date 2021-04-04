@@ -183,9 +183,20 @@ class GameStartTest extends TestCase
         $this->seed(CharacterSeed::class);
 
         $heroes = Character::hero()->get();
+        $monster = Character::monster()->first();
+
+        $content = [
+            'hero' => $heroes->first()->toArray(),
+            'monster' => $monster->toArray(),
+            'fight' => ['id' => 1]
+        ];
 
         Http::fake([
-            '*/heroes' => Http::response($heroes->makeHidden('type')->toJson())
+            '*/heroes' => Http::response($heroes->makeHidden('type')->toJson()),
+            '*/fights' => Http::response(
+                body: json_encode($content),
+                status: 201
+            )
         ]);
 
         $this->artisan($this->command)
@@ -198,7 +209,7 @@ class GameStartTest extends TestCase
                 ['ID', 'Class', 'Life Points', 'Strength', 'Defense', 'Agility', 'Damage'],
                 $heroes->makeHidden('type')->toArray()
             )
-            ->expectsQuestion("Please, inform the ID of the chosen class", $heroes->first()->id);
-
+            ->expectsQuestion("Please, inform the ID of the chosen class", $heroes->first()->id)
+            ->expectsOutput("Your opponent is a {$monster->class}!");
     }
 }
