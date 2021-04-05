@@ -27,6 +27,7 @@ class FightController extends Controller
     public function index(User $user): Response
     {
         $fights = $user->fights;
+        $fights->loadMissing(['hero', 'monster']);
         return response($fights->toJson());
     }
 

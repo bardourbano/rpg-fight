@@ -44,7 +44,9 @@ class GameSetup extends Command
      */
     public function handle()
     {
+        /** @var string */
         $host = $this->option('host');
+        /** @var string */
         $port = $this->option('port');
         $no_server = $this->option('no-server');
 
@@ -67,9 +69,11 @@ class GameSetup extends Command
         if (!$is_database_filled) {
             $this->task('Populating database', fn() =>Artisan::call('db:seed'));
         } else {
-            if ($this->confirm(
-                'Database for the game alredy exists. Do you wish to overwrite it?:'
-            )) {
+            if (
+                $this->confirm(
+                    'Database for the game alredy exists. Do you wish to overwrite it?:'
+                )
+            ) {
                 $this->task('Re-creating tables', fn() => Artisan::call('migrate:fresh'));
                 $this->task('Populating database', fn() => Artisan::call('db:seed'));
             }

@@ -16,6 +16,7 @@ class Fight extends Model
     use HasFactory;
 
     protected $casts = [
+        'win' => 'boolean',
         'log' => 'array'
     ];
     protected $fillable = ['log', 'win'];

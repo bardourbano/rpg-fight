@@ -38,7 +38,8 @@ class UserController extends Controller
         } catch (QueryException $e) {
             if ($e->getCode() == 23000) {
                 $status = 409;
-                $content = "Nickname alredy exists";
+                //$content = "Nickname alredy exists";
+                $content = $e->getCode();
             } else {
                 $status = 500;
                 $content = $e->getMessage();
