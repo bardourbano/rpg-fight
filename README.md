@@ -37,33 +37,35 @@
 
 <!-- ABOUT THE PROJECT -->
 ## About The Project
-It's a simple API, with a client, that represents a battle in tabletop rpgs like _Dungenons & Dragons_ and _Tormenta_.
+This project was parte of the Juniur Software Engineer screening for the Imusica division of Claro Brasil.
+It's a simple representation of a battle in tabletop rpgs like _Dungenons & Dragons_ and _Tormenta_.
+
 ### Built With
-As I am a main Laravel developer at the moment, and had little free time, I've choosen to use Laravel to build this API and the command-line clint used to test it.
+I was built with PHP, using Laravel for the web API, composer for package management,SQLite and PHPunit for tests and MySQL as database.
 * [Laravel](https://laravel.com)
+* [Composer](https://getcomposer.org)
+* [PHP](https://www.php.net)
+* [SQLite](https://www.sqlite.org)
+* [MySQL](https://www.mysql.com)
+* [PHPUnit](https://phpunit.de/index.html) 
 
 
 
 <!-- GETTING STARTED -->
 ## Getting Started
-
-This projet is simple but there are some things you should do, and have, to run it.
 ### Prerequisites
 
 #### MySQL
   
-This projet was tested with SQLite and MySQL 8.0. \
-I recomend to use MySQL as SQLite was only used for the tests with phpunit.
-
-> It should be compatible with MariaDB, but it was not tested.
+This projet was tested with SQLite and MySQL 8.0.
 
 #### PHP 8
-This project was built usind PHP 8 and you shoul use it too.
+This project was built usind PHP 8.
 
-> Laravel does support older versions, but match expressions are used in the code and versions prior 8.x don't have it.
+> Laravel does support older versions, there are control structures used in this project that are not present in versions prior to 8.x.
 
 #### Composer
-It uses Composer as package mannager and you will need it to install the projetc.
+Please, user the Composer package manager to install the project.
 
 ### Installation and Usage
 
@@ -84,7 +86,7 @@ It uses Composer as package mannager and you will need it to install the projetc
    ```sh
    php artisan key:generate
    ```
-5. Create a database for the app
+5. Create a database for the app. (This command shoul be run through an MySQL CLI or IDE)
     ```sql
     CREATE DATABASE rpg_fight
     ```
@@ -103,23 +105,18 @@ It uses Composer as package mannager and you will need it to install the projetc
    ```sh
    php artisan game:setup
    ```
-   > If you have problems with this command, you can do it manually by using this command:
+   > If you have problems with this command, try this instead:
    > ```sh
    > php artisan migrate:fresh --seed
    > ```
 8. Run the API
-   If the development serve did not start with the previous command, you can start it by yourself using this:
+   If the development server fails to start with the previous command, you can start it using this command:
    ```sh
    php artisan serve
    ```
-   > By default it starts at http:127.0.0.1:8000, but you can modify it by passing the paramenters `--host` and `--port` to the commands `game:setup` or `serve`.
+   > By default it starts at http://127.0.0.1:8000, but you can modify it with the paramenters `--host` and `--port`.
 9. Run the client
-    Open another terminal in the poject's folder and start the client
+    Open the poject's folder another terminal and start the client:
     ```sh
     php artisan game:start
     ```
-
-<!-- ROADMAP -->
-## Roadmap
-
-A dedicated client is planned, but not in near future as well an rich API documentation that will be concluded soon.
